@@ -1,9 +1,10 @@
-
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterrealtime/Constant/ShareFunctions.dart';
+import 'package:flutterrealtime/Pages/HomePage.dart';
 import 'package:flutterrealtime/Providers/Providers/UserProvider.dart';
+import 'package:flutterrealtime/Widgets/BarChart.dart';
 import 'package:flutterrealtime/Widgets/Datetime.dart';
-import 'package:flutterrealtime/Widgets/DynamicDropdown.dart';
 import 'package:provider/provider.dart';
 import '../Api/Api.dart';
 import '../Models/Bayi.dart';
@@ -17,56 +18,53 @@ class SiparisDagilimPage extends StatefulWidget {
 }
 
 class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
-
   late String isletme;
   late String email;
-   List<Bayi> _bayiListesi = [];
+  List<Bayi> _bayiListesi = [];
   late String userdealer;
-   Bayi bayi1 = Bayi(
-                    usubelistid: 0,
-                    usubelistuserid: 0,
-                    usubelistuname: "",
-                    usubelistudealer: "",
-                    usubelistsubedealer: "0",
-                    usubelistsubename: "Tümü Seç",
-                  );
- 
-  
-  Bayi? _selectedBayi=Bayi(
-                    usubelistid: 0,
-                    usubelistuserid: 0,
-                    usubelistuname: "",
-                    usubelistudealer: "",
-                    usubelistsubedealer: "sb34006",
-                    usubelistsubename: "Tümü Seç",
-                  );
-  String dateString = '2024-03-03';
+  Bayi bayi1 = Bayi(
+    usubelistid: 0,
+    usubelistuserid: 0,
+    usubelistuname: "",
+    usubelistudealer: "",
+    usubelistsubedealer: "",
+    usubelistsubename: "Tümü Seç",
+  );
+
+  Bayi? _selectedBayi;
+
+  //String dateString = '2024-03-03';
 
   @override
   void initState() {
     super.initState();
     fetchSiparisandCiroPie();
     _bayiListesiYukle();
+    // Başlangıçta bir bayi seçili olarak bayi1'i atayalım
+    _selectedBayi = bayi1;
   }
 
- Future<List<int>> ciropie () async {
-  List<int> siparisandciropie = await Api().GetirSiparisGrafikSiparis(_selectedBayi!.usubelistsubedealer,dateString, isletme);
-  return siparisandciropie;
-}
+  Future<List<int>> ciropie() async {
+    List<int> siparisandciropie = await Api().GetirSiparisGrafikSiparis(
+        Provider.of<UserProvider>(context).selectedBayi.usubelistsubedealer,
+        Provider.of<UserProvider>(context).dateString,
+        isletme);
+    return siparisandciropie;
+  }
 
   void fetchSiparisandCiroPie() async {
     isletme = Provider.of<UserProvider>(context, listen: false).isletme;
     email = Provider.of<UserProvider>(context, listen: false).email;
     userdealer = Provider.of<UserProvider>(context, listen: false).userDealer;
-    
-   
+    // _selectedBayi =Provider.of<UserProvider>(context, listen: false).selectedBayi;
   }
+
   Future<void> _bayiListesiYukle() async {
     try {
-      List<Bayi> bayiListesi = await Api().getiriliskiliBayiListesi(userdealer, isletme, email);
+      List<Bayi> bayiListesi =
+          await Api().getiriliskiliBayiListesi(userdealer, isletme, email);
       setState(() {
         _bayiListesi = bayiListesi;
-        
       });
     } catch (e) {
       print("Hata: $e");
@@ -75,7 +73,7 @@ class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
 
   @override
   Widget build(BuildContext context) {
-      var size = MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
@@ -134,11 +132,11 @@ class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     SizedBox(
-              height: size.height * 0.04,
-            ),
-            
-           DropdownButtonFormField<Bayi>(
+                    SizedBox(
+                      height: size.height * 0.04,
+                    ),
+
+                    /* DropdownButtonFormField<Bayi>(
               value: _selectedBayi, // Seçilen bayi
               onChanged: (newValue) {
                 setState(() {
@@ -161,9 +159,9 @@ class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
                 labelText: 'Bayi Seçin',
                 border: OutlineInputBorder(),
               ),
-            ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    ClipRRect(
+            ),*/
+                    SizedBox(height: size.height * 0.01),
+                    /*  ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
@@ -190,12 +188,12 @@ class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
                           },
                         ),
                       ),
-                    ),
+                    ),*/
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         padding: EdgeInsets.all(8),
                         child: Column(
                           children: [
@@ -203,11 +201,16 @@ class _SiparisDagilimPageState extends State<SiparisDagilimPage> {
                               child: Text(
                                 "Sipariş Dağılımı",
                                 style: TextStyle(
-                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
                                 ),
                               ),
                             ),
-                            PieChartSample2(data: dataSiparis),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            BarChartSample(data: dataCiro),
                           ],
                         ),
                       ),

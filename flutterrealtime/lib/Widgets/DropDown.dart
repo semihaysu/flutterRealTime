@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 typedef DropdownCallback = void Function(String? selectedValue);
-class DropdownItem extends StatefulWidget {
-    final DropdownCallback? onChanged;
 
-     const DropdownItem({Key? key, this.onChanged}) : super(key: key);
+class DropdownItem extends StatefulWidget {
+  final DropdownCallback? onChanged;
+
+  const DropdownItem({Key? key, this.onChanged}) : super(key: key);
   @override
   _DropdownItemState createState() => _DropdownItemState();
 }
@@ -44,6 +45,8 @@ class _DropdownItemState extends State<DropdownItem> {
             Text("Pizza V"),
           ],
         ),
+        //http://195.87.222.67:8080/easycoProPizzaV-0.0.1
+        //http://172.16.127.123:8080/easycoProPizzaV/
         value: "http://195.87.222.67:8080/easycoProPizzaV-0.0.1",
       ),
     ];
