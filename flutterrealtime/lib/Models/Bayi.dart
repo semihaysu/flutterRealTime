@@ -36,7 +36,6 @@ class Bayi {
     return data;
   }
 
-  
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

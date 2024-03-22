@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutterrealtime/Pages/HomePage.dart';
+import 'package:flutterrealtime/Providers/Providers/UserProvider.dart';
+import 'package:provider/provider.dart';
 
 class DateSelector extends StatefulWidget {
   final Function(DateTime) onDateSelected;
@@ -10,7 +13,14 @@ class DateSelector extends StatefulWidget {
 }
 
 class _DateSelectorState extends State<DateSelector> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate; // Change here
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+    _selectDate(context);
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -26,25 +36,24 @@ class _DateSelectorState extends State<DateSelector> {
 
       widget.onDateSelected(selectedDate);
     }
+    Provider.of<UserProvider>(context, listen: false)
+        .setDate("${selectedDate.toLocal()}".split(' ')[0]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text(
-          "${selectedDate.toLocal()}".split(' ')[0],
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
-        ),
-        SizedBox(height: 20.0),
-        ElevatedButton(
-          onPressed: () => _selectDate(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.orange, // Siyah buton rengi
+        TextButton.icon(
+          onPressed: () {
+            _selectDate(context);
+          },
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.white, // Siyah buton rengi
           ),
-          child: Text('Tarih Seç', style: TextStyle(color: Colors.white)),
+          label: Text("${selectedDate.toLocal()}".split(' ')[0],
+              style: TextStyle(color: Colors.deepOrange)),
+          icon: Icon(Icons.date_range),
         ),
       ],
     );

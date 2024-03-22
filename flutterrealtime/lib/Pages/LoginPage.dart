@@ -124,10 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                         Image(
+                          Image(
                             image: AssetImage('assets/easylogo.png'),
-                            height: maxHeight*0.1,
-                           
+                            height: maxHeight * 0.1,
                           ),
                           SizedBox(
                             height: maxHeight * 0.01,
@@ -271,20 +270,49 @@ class _LoginPageState extends State<LoginPage> {
                                     Provider.of<UserProvider>(context,
                                             listen: false)
                                         .setPassword(password);
-                                         Provider.of<UserProvider>(context,
+                                    Provider.of<UserProvider>(context,
                                             listen: false)
                                         .setUserDealer(dropdownSelectedValue!);
-
-                                   
+//düzenle
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HomePage()),
+                                          builder: (context) => HomePage(
+                                              isletmeadi: (dropdownSelectedValue !=
+                                                          null &&
+                                                      dropdownSelectedValue!
+                                                              .length >=
+                                                          1)
+                                                  ? (dropdownSelectedValue!
+                                                              .toString() ==
+                                                          "http://sb.saloonburger.com.tr"
+                                                      ? "Saloon Burger"
+                                                      : (dropdownSelectedValue!
+                                                                  .toString() ==
+                                                              "someValue"
+                                                          ? "Pizza Lazza "
+                                                          : "Pizza V"))
+                                                  : "Pizza V")),
                                     );
                                     Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
+                                        builder: (context) => HomePage(
+                                            isletmeadi: (dropdownSelectedValue !=
+                                                        null &&
+                                                    dropdownSelectedValue!
+                                                            .length >=
+                                                        1)
+                                                ? (dropdownSelectedValue!
+                                                            .toString() ==
+                                                        "http://sb.saloonburger.com.tr"
+                                                    ? "Saloon Burger"
+                                                    : (dropdownSelectedValue!
+                                                                .toString() ==
+                                                            "someValue"
+                                                        ? "Pizza Lazza "
+                                                        : "Pizza V"))
+                                                : "Pizza V"),
                                       ),
                                       (route) => false, // Tüm sayfaları kapat
                                     );
@@ -292,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
                                     shareFunction().showAlertSimple(
                                         context,
                                         "hata",
-                                        "Kullanı Başarılı Değil",
+                                        "Kullanıcı Başarılı Değil",
                                         "Tamam");
                                     setState(() {
                                       isLoginLoad = false;

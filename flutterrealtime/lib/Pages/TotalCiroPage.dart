@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterrealtime/Models/Bayi.dart';
+import 'package:flutterrealtime/Pages/HomePage.dart';
 import 'package:provider/provider.dart';
 import '../Api/Api.dart';
 
@@ -17,33 +18,33 @@ class TotalCiroPage extends StatefulWidget {
   _TotalCiroPageState createState() => _TotalCiroPageState();
 }
 
+//String dateString = '2024-03-03';
+
 class _TotalCiroPageState extends State<TotalCiroPage> {
   late String isletme;
   late String email;
-  
+
   late String userdealer;
-  
-  String dateString = '2024-03-03';
+
   List<Bayi> _bayiListesi = [];
-  
+
   Bayi bayi1 = Bayi(
-                    usubelistid: 0,
-                    usubelistuserid: 0,
-                    usubelistuname: "",
-                    usubelistudealer: "",
-                    usubelistsubedealer: "0",
-                    usubelistsubename: "Tümü Seç",
-                  );
- 
-  
-  Bayi? _selectedBayi=Bayi(
-                    usubelistid: 0,
-                    usubelistuserid: 0,
-                    usubelistuname: "",
-                    usubelistudealer: "",
-                    usubelistsubedealer: "0",
-                    usubelistsubename: "Tümü Seç",
-                  );
+    usubelistid: 0,
+    usubelistuserid: 0,
+    usubelistuname: "",
+    usubelistudealer: "",
+    usubelistsubedealer: "0",
+    usubelistsubename: "Tümü Seç",
+  );
+
+  Bayi? _selectedBayi = Bayi(
+    usubelistid: 0,
+    usubelistuserid: 0,
+    usubelistuname: "",
+    usubelistudealer: "",
+    usubelistsubedealer: "0",
+    usubelistsubename: "Tümü Seç",
+  );
   @override
   void initState() {
     super.initState();
@@ -52,14 +53,20 @@ class _TotalCiroPageState extends State<TotalCiroPage> {
   }
 
   Future<List<GetirTotalCiro>> getirTotalCiro() async {
-    List<GetirTotalCiro> getirTotalCiro = await Api().getirTotalCiro(userdealer,
-        email, _selectedBayi!.usubelistsubedealer, dateString, isletme);
+    List<GetirTotalCiro> getirTotalCiro = await Api().getirTotalCiro(
+        userdealer,
+        email,
+        Provider.of<UserProvider>(context).selectedBayi.usubelistsubedealer,
+        Provider.of<UserProvider>(context).dateString,
+        isletme);
+
     return getirTotalCiro;
   }
 
-   Future<void> _bayiListesiYukle() async {
+  Future<void> _bayiListesiYukle() async {
     try {
-      List<Bayi> bayiListesi = await Api().getiriliskiliBayiListesi(userdealer, isletme, email);
+      List<Bayi> bayiListesi =
+          await Api().getiriliskiliBayiListesi(userdealer, isletme, email);
       setState(() {
         _bayiListesi = bayiListesi;
         _selectedBayi = _bayiListesi.isNotEmpty ? _bayiListesi.first : null;
@@ -68,13 +75,13 @@ class _TotalCiroPageState extends State<TotalCiroPage> {
       print("Hata: $e");
     }
   }
- 
 
   void fetchSiparisandCiroPie() async {
     isletme = Provider.of<UserProvider>(context, listen: false).isletme;
     email = Provider.of<UserProvider>(context, listen: false).email;
     userdealer = Provider.of<UserProvider>(context, listen: false).userDealer;
-    
+    dateString = Provider.of<UserProvider>(context, listen: false).dateString;
+    //  _selectedBayi =Provider.of<UserProvider>(context, listen: false).selectedBayi;
   }
 
   @override
@@ -83,65 +90,11 @@ class _TotalCiroPageState extends State<TotalCiroPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
-        child: Column(
+        child: Center(
+            child: Column(
           children: [
             SizedBox(
-              height: size.height * 0.04,
-            ),
-            
-           DropdownButtonFormField<Bayi>(
-              value: _selectedBayi, // Seçilen bayi
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedBayi = newValue; // Seçilen bayiyi güncelle
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: bayi1,
-                  child: Text("Tümü Seç"),
-                ),
-                ..._bayiListesi.map((bayi) {
-                  return DropdownMenuItem<Bayi>(
-                    value: bayi,
-                    child: Text(bayi.usubelistsubename),
-                  );
-                }).toList(),
-              ],
-              decoration: const InputDecoration(
-                labelText: 'Bayi Seçin',
-                border: OutlineInputBorder(),
-              ),
-            ),
-         
-            SizedBox(height: size.height * 0.04),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                color: const Color.fromARGB(255, 255, 255, 255),
-                child: DateSelector(
-                  onDateSelected: (selectedDate) {
-                    setState(() {
-                      DateTime today = DateTime.now();
-
-                      if (selectedDate.isAfter(today)) {
-                        shareFunction().showAlertSimple(context, "Uyarı",
-                            "Bugünden Büyük Bir Tarih Seçtiniz", "Tamam");
-                        return;
-                      }
-
-                      setState(() {
-                        dateString =
-                            '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
-                      });
-                    });
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: size.height * 0.04,
+              height: 100,
             ),
             FutureBuilder(
               future: getirTotalCiro(),
@@ -167,7 +120,59 @@ class _TotalCiroPageState extends State<TotalCiroPage> {
               },
             ),
           ],
-        ),
+        )
+            /*DropdownButtonFormField<Bayi>(
+              value: _selectedBayi, // Seçilen bayi
+              onChanged: (newValue) {
+                setState(() {
+                  _selectedBayi = newValue; // Seçilen bayiyi güncelle
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: bayi1,
+                  child: Text("Tümü Seç"),
+                ),
+                ..._bayiListesi.map((bayi) {
+                  return DropdownMenuItem<Bayi>(
+                    value: bayi,
+                    child: Text(bayi.usubelistsubename),
+                  );
+                }).toList(),
+              ],
+              decoration: const InputDecoration(
+                labelText: 'Bayi Seçin',
+                border: OutlineInputBorder(),
+              ),
+            ),*/
+
+            /*ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                child: DateSelector(
+                  onDateSelected: (selectedDate) {
+                    setState(() {
+                      DateTime today = DateTime.now();
+
+                      if (selectedDate.isAfter(today)) {
+                        shareFunction().showAlertSimple(context, "Uyarı",
+                            "Bugünden Büyük Bir Tarih Seçtiniz", "Tamam");
+                        return;
+                      }
+
+                      setState(() {
+                        dateString =
+                            '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
+                      });
+                    });
+                  },
+                ),
+              ),
+            ),*/
+
+            ),
       ),
     );
   }

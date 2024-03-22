@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterrealtime/Models/AdisyonListesi.dart';
+import 'package:flutterrealtime/Pages/HomePage.dart';
 import 'package:flutterrealtime/Widgets/AdisyonListesiTable.dart';
 import 'package:provider/provider.dart';
 import '../Api/Api.dart';
@@ -26,6 +27,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
 
   String? _selectedValueKaynak = "4";
   String? _selectedValueDurum = "-6";
+
   Bayi? _selectedBayi = Bayi(
     usubelistid: 0,
     usubelistuserid: 0,
@@ -35,21 +37,23 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
     usubelistsubename: "Tümü Seç",
   );
   late String isletme;
+  bool getirButon = false;
 
-  String dateString = '2024-03-03';
+  //String dateString = '2024-03-03';
 
   @override
   void initState() {
     super.initState();
+
     fetchSiparisandCiroPie();
     _bayiListesiYukle();
   }
 
   Future<List<Adisyon>> getirAdisyonListesi() async {
     List<Adisyon> getirTotalCiro = await Api().getirAdisyonListesi(
-        _selectedBayi!.usubelistsubedealer,
-        dateString,
-        dateString,
+        Provider.of<UserProvider>(context).selectedBayi.usubelistsubedealer,
+        Provider.of<UserProvider>(context).dateString,
+        Provider.of<UserProvider>(context).dateString,
         _selectedValueKaynak!,
         _selectedValueDurum!,
         isletme);
@@ -60,6 +64,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
     isletme = Provider.of<UserProvider>(context, listen: false).isletme;
     email = Provider.of<UserProvider>(context, listen: false).email;
     userdealer = Provider.of<UserProvider>(context, listen: false).userDealer;
+    dateString = Provider.of<UserProvider>(context, listen: false).dateString;
   }
 
   Future<void> _bayiListesiYukle() async {
@@ -100,7 +105,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                       });
                     },
 
-                    items:const [
+                    items: const [
                       DropdownMenuItem(
                         value: '-6', // İlk değer
                         child: Text('Tümü'),
@@ -140,14 +145,16 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                 Container(
                   width: size.width * 0.4,
                   child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration( labelText: 'Kaynak Seçin',),
+                    decoration: InputDecoration(
+                      labelText: 'Kaynak Seçin',
+                    ),
                     value: _selectedValueKaynak, // Seçilen değer
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedValueKaynak = newValue; // Yeni değeri ayarla
                       });
                     },
-                    items:const [
+                    items: const [
                       DropdownMenuItem(
                         value: '1',
                         child: Text('Masa'),
@@ -223,8 +230,22 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
               ],
             ),
             SizedBox(height: size.height * 0.04),
-            DropdownButtonFormField<Bayi>(
-              
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  getirButon = true;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange.shade500,
+              ),
+              child: Text(
+                "Getir",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            /*DropdownButtonFormField<Bayi>(
               value: _selectedBayi, // Seçilen bayi
               onChanged: (newValue) {
                 setState(() {
@@ -242,9 +263,11 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                 labelText: 'Bayi Seçin',
                 border: OutlineInputBorder(),
               ),
-            ),
+            ),*/
             SizedBox(height: size.height * 0.04),
-            ClipRRect(
+            //Text(dateString),
+
+            /* ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -268,7 +291,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                   },
                 ),
               ),
-            ),
+            ),*/
             SizedBox(
               height: size.height * 0.04,
             ),
@@ -282,7 +305,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                   return Center(
                     child: Text(snapshot.error.toString()),
                   );
-                } else if (snapshot.hasData) {
+                } else if (snapshot.hasData && getirButon == true) {
                   return SingleChildScrollView(
                     child: Column(
                       children: [
@@ -291,9 +314,7 @@ class _AdisyonListesiPageState extends State<AdisyonListesiPage> {
                     ),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center();
                 }
               },
             ),

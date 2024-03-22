@@ -25,15 +25,15 @@ class _PieChartSample2State extends State<PieChartSample2> {
     Colors.pink,
     Colors.amber,
     Colors.deepPurple,
-Colors.cyan,
-Colors.deepOrange,
-Colors.indigo,
-Colors.lime,
-Colors.lightBlue,
-Colors.lightGreen,
-Colors.deepPurpleAccent,
-Colors.amberAccent,
-Colors.brown
+    Colors.cyan,
+    Colors.deepOrange,
+    Colors.indigo,
+    Colors.lime,
+    Colors.lightBlue,
+    Colors.lightGreen,
+    Colors.deepPurpleAccent,
+    Colors.amberAccent,
+    Colors.brown
   ];
 
   @override
@@ -41,10 +41,8 @@ Colors.brown
     return Container(
       width: MediaQuery.of(context).size.width * 0.92,
       height: showData
-
           ? MediaQuery.of(context).size.height * 0.8
           : MediaQuery.of(context).size.height * 0.6,
-
       color: const Color.fromARGB(255, 255, 255, 255),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +86,8 @@ Colors.brown
                     Icons.arrow_drop_up,
                     color: const Color.fromARGB(255, 0, 0, 0),
                   )
-                : Icon(Icons.arrow_drop_down, color: const Color.fromARGB(255, 0, 0, 0)),
+                : Icon(Icons.arrow_drop_down,
+                    color: const Color.fromARGB(255, 0, 0, 0)),
           ),
           Visibility(
             visible: showData,
@@ -97,9 +96,7 @@ Colors.brown
                 Text(
                   'Veriler:',
                   style: TextStyle(
-
                     fontSize: 25,
-
                     fontWeight: FontWeight.bold,
                     color: const Color.fromARGB(255, 0, 0, 0),
                   ),
@@ -127,7 +124,9 @@ Colors.brown
                           SizedBox(width: 5),
                           Text(
                             '$key',
-                            style: TextStyle(fontSize: 20, color: const Color.fromARGB(255, 0, 0, 0)),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: const Color.fromARGB(255, 0, 0, 0)),
                           ),
                           SizedBox(width: 10),
                         ],
